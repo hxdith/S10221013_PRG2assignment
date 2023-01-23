@@ -36,7 +36,7 @@ namespace S10221013_PRG2Assignment
 
         public override string ToString()
         {
-            return string.Format("Name: {0} Passport Number: {1} Membership {2} Stay: {3}", Name, PassportNum, Member, HotelStay);
+            return string.Format("Name: {0} Passport Number: {1}  {2}  {3}", Name, PassportNum, Member, HotelStay);
         }
     }
 }

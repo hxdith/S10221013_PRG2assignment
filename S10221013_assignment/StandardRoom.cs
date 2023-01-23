@@ -31,7 +31,7 @@ namespace S10221013_PRG2Assignment
             }
 
             total = DailyRate + total;
-            /* if (BedConfiguration == "single")
+            if (BedConfiguration == "single")
             {
                 total = +90;
             }
@@ -42,7 +42,7 @@ namespace S10221013_PRG2Assignment
             else if (BedConfiguration == "triple")
             {
                 total = +120;
-            } */
+            }
             return total;
         }
         public override string ToString()
