@@ -103,14 +103,14 @@ void initroomdata()
 
 
     //display the content of the roomlist
-    foreach (Room room in roomList)
+    /*oreach (Room room in roomList)
     {
         if (room.IsAvail == false)
         {
             Console.WriteLine(room);
         }
 
-    }
+    }*/
 }
 
 initGuestData();
@@ -131,20 +131,33 @@ void initGuestData()
             {
                 DateTime checkin = DateTime.Parse(gueststayinfo[3]);
                 DateTime checkout = DateTime.Parse(gueststayinfo[4]);
-
-                foreach (Room room in roomList)
-                {
-                    if (room.
-                }
-)
+                guestList.Add( new Guest(name, passportNo, new Stay(checkin, checkout), new Membership(membership, points)));
                 break;
-                
             }
-    
-        
+        }
+
+
     }
     
 }
+/* foreach (Guest guest in guestList)
+{
+    Console.WriteLine(guest);
+}
+*/
 
+//Feature 1, display all guest
+displayAllGuest();
+void displayAllGuest()
+{
+    Console.WriteLine($"{"S/N",-3} {"Guests",-7} {"PassportNo",-15} {"Membership Status",-15}");
+    Console.WriteLine("============================================");
+    int i = 1;
+    foreach (Guest guest in guestList)
+    {
 
+        Console.WriteLine($"{i,-3} {guest.Name,-7} {guest.PassportNum,-15}{guest.Member.Status,-15} ");
+        i = i + 1;
+    }
+}
 
