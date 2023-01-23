@@ -147,17 +147,45 @@ void initGuestData()
 */
 
 //Feature 1, display all guest
-displayAllGuest();
+//displayAllGuest();
 void displayAllGuest()
 {
-    Console.WriteLine($"{"S/N",-3} {"Guests",-7} {"PassportNo",-15} {"Membership Status",-15}");
+    Console.WriteLine($"{"S/N",-3} {"Guests",-7} {"PassportNo",-10} {"Membership Status",-15}");
     Console.WriteLine("============================================");
     int i = 1;
     foreach (Guest guest in guestList)
     {
 
-        Console.WriteLine($"{i,-3} {guest.Name,-7} {guest.PassportNum,-15}{guest.Member.Status,-15} ");
+        Console.WriteLine($"{i,-3} {guest.Name,-7} {guest.PassportNum,-10} {guest.Member.Status,-15} ");
         i = i + 1;
     }
 }
 
+void mainmenu()
+{
+    {
+        Console.WriteLine("Select one of the options below");
+        Console.WriteLine("-------------------------------------");
+        Console.WriteLine("1. Display all guests");
+        Console.WriteLine("2. Display all available rooms");
+        Console.WriteLine("3. Register Guest");
+        Console.WriteLine("4. Check-in Guest");
+        Console.WriteLine("5. Display stay of guest");
+        Console.WriteLine("6. Extend the number of stay days");
+        Console.WriteLine("-------------------------------------");
+    }
+
+}
+
+//main program
+
+while (true)
+{
+    mainmenu();
+    Console.Write("Your option:");
+    int option = Convert.ToInt32(Console.ReadLine());
+    if (option == 1)
+    {
+        displayAllGuest();
+    }
+}
