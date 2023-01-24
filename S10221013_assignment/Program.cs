@@ -39,16 +39,21 @@ void initroomdata()
         string bedconfig = roominfo[2];
         double dailyrate = double.Parse(roominfo[3]);
         bool availability = true;
-        // check the availability of the room
+        // teacheck the availability of the room
         
         for (int j = 1; j < stayData.Length; j++)
         {
 
             string[] stayinfo = stayData[j].Split(','); //measures if both column happens to have null or empty string.
             //default case
-            int notnullinfo1 = 0; // set placeholder value
+            int notnullinfo1 = 0; // set placeholder value for the room cells
             int notnullinfo2 = 0;
-            if (stayinfo[9] == "" || stayinfo[5] == "")
+            if (int.TryParse(stayinfo[9], out notnullinfo1) && int.TryParse(stayinfo[5], out notnullinfo2)) //check if the cell is empty, otherwise convert the cell the int * this is assuming only 2 rooms can be booked per person
+            {
+                
+            }
+
+            /* if (stayinfo[9] == "" || stayinfo[5] == "") //less cleaner way to do the previous validation? just leaving this here
             {
                 notnullinfo1 = 0; // assuming there's no room 0
                 notnullinfo2 = 0;
@@ -58,12 +63,12 @@ void initroomdata()
             {
                 notnullinfo1 = int.Parse(stayinfo[9]); // parse the string to int if not null
                 notnullinfo2 = int.Parse(stayinfo[5]);
-            }
+            } */
 
                 
             if (roomnumber == notnullinfo1 || roomnumber == notnullinfo2) // checks if the room number is in a column in the stay data file.
                 {
-                    //check the checkin column to see if its available
+                    //check the check-in column to see if its available
                     if (stayinfo[2].ToLower() == "true") //to lower so that in the case where the text gets typed with the wrong capitalisation of letters, the code doesnt skip this step by default.
                         {
                             // if it is present in the stay data list and the check-in column shows true, then the room is not available.
@@ -103,18 +108,18 @@ void initroomdata()
 
 
     //display the content of the roomlist
-    /*oreach (Room room in roomList)
+    foreach (Room room in roomList)
     {
         if (room.IsAvail == false)
         {
             Console.WriteLine(room);
         }
 
-    }*/
+    }
 }
 
 initGuestData();
-//do all the necessary things to load the data related to stays
+//method takes info from the data file and does the necessary comparing to generate a guest obj
 void initGuestData()
 {
     for (int i = 1; i < guestData.Length; i++)
@@ -150,7 +155,7 @@ void initGuestData()
 //displayAllGuest();
 void displayAllGuest()
 {
-    Console.WriteLine($"{"S/N",-3} {"Guests",-7} {"PassportNo",-10} {"Membership Status",-15}");
+    Console.WriteLine($"\n{"S/N",-3} {"Guests",-7} {"PassportNo",-10} {"Membership Status",-15}");
     Console.WriteLine("============================================");
     int i = 1;
     foreach (Guest guest in guestList)
@@ -159,6 +164,39 @@ void displayAllGuest()
         Console.WriteLine($"{i,-3} {guest.Name,-7} {guest.PassportNum,-10} {guest.Member.Status,-15} ");
         i = i + 1;
     }
+}
+
+void displayAllRoom()
+{
+
+    Console.WriteLine("==================================================================================================");
+    Console.WriteLine("All available rooms: ");
+    Console.WriteLine("Standard Rooms: ");
+    Console.WriteLine($" {"Room Number",-15} {"Bed Configuration",-20} {"Daily Rate",-10}");
+    foreach (Room room in roomList)
+    {
+        if (room.IsAvail == true)
+        {
+            if (room.GetType() == typeof(StandardRoom))
+            {
+                Console.WriteLine($" {room.RoomNumber,-15} {room.BedConfiguration,-20} {room.DailyRate,-10}");
+            }
+        }
+    }
+    Console.WriteLine("Deluxe Rooms: ");
+    Console.WriteLine($" {"Room Number",-15} {"Bed Configuration",-20} {"Daily Rate",-10}");
+    foreach (Room room in roomList)
+    {
+        if (room.IsAvail == true)
+        {
+            if (room.GetType() == typeof(DeluxeRoom))
+            {
+                Console.WriteLine($" {room.RoomNumber,-15} {room.BedConfiguration,-20} {room.DailyRate,-10}");
+            }
+
+        }
+    }
+
 }
 
 void mainmenu()
@@ -177,15 +215,49 @@ void mainmenu()
 
 }
 
-//main program
 
+void registerGuest()
+{
+    Console.WriteLine("Enter the name of the guest: ");
+}
+//main progra
 while (true)
 {
     mainmenu();
-    Console.Write("Your option:");
-    int option = Convert.ToInt32(Console.ReadLine());
+    int option;
+    while (true)
+    {
+        try
+        {
+            Console.Write("Your option:");
+            option = Convert.ToInt32(Console.ReadLine());
+            break;
+        }
+        catch (Exception)
+        {
+            Console.WriteLine("Invalid input, please enter a number");
+        }
+    }
     if (option == 1)
     {
-        displayAllGuest();
+
+        while (true)
+        {
+            displayAllGuest();
+            Console.WriteLine("\n Press anything to go back to the main menu");
+            Console.ReadKey();
+            Console.WriteLine(" "); //input key on next line
+            break;
+        }
     }
+    if (option == 2)
+        while (true)
+        {
+            displayAllRoom();
+            Console.WriteLine("\n Press anything to go back to the main menu");
+            Console.ReadKey();
+            Console.WriteLine(" "); //input key on next line
+
+            break;
+        }
 }

@@ -16,7 +16,8 @@ namespace S10221013_PRG2Assignment
 
         public Membership(string status, int points)
         {
-            Status = status.ToLower();
+            string memberstatus = status.ToLower();
+            Status = char.ToUpper(memberstatus[0]) + memberstatus.Substring(1);
             Points = points;
         }
 
@@ -52,7 +53,7 @@ namespace S10221013_PRG2Assignment
 
         public override string ToString()
         {
-            return string.Format("Membership Status: {0} Points: {1}", Status, Points);
+            return string.Format("Membership status: {0} Points: {1}", Status, Points);
         }
 
     }
