@@ -11,6 +11,7 @@
 
 
 using S10221013_PRG2Assignment;
+using System.Runtime.CompilerServices;
 // reads the data from the files and store them in an array
 string[] roomData = File.ReadAllLines("Rooms.csv");
 string[] guestData = File.ReadAllLines("Guests.csv");
@@ -44,13 +45,13 @@ void initroomdata()
         for (int j = 1; j < stayData.Length; j++)
         {
 
-            string[] stayinfo = stayData[j].Split(','); //measures if both column happens to have null or empty string.
+            string[] stayinfo = stayData[j].Split(','); //measures: if both column happens to have null or empty string.
             //default case
             int notnullinfo1 = 0; // set placeholder value for the room cells
             int notnullinfo2 = 0;
             if (int.TryParse(stayinfo[9], out notnullinfo1) && int.TryParse(stayinfo[5], out notnullinfo2)) //check if the cell is empty, otherwise convert the cell the int * this is assuming only 2 rooms can be booked per person
             {
-                
+                 
             }
 
             /* if (stayinfo[9] == "" || stayinfo[5] == "") //less cleaner way to do the previous validation? just leaving this here
@@ -155,6 +156,7 @@ void initGuestData()
 //displayAllGuest();
 void displayAllGuest()
 {
+    
     Console.WriteLine($"\n{"S/N",-3} {"Guests",-7} {"PassportNo",-10} {"Membership Status",-15}");
     Console.WriteLine("============================================");
     int i = 1;
@@ -173,11 +175,11 @@ void displayAllRoom()
     Console.WriteLine("All available rooms: ");
     Console.WriteLine("Standard Rooms: ");
     Console.WriteLine($" {"Room Number",-15} {"Bed Configuration",-20} {"Daily Rate",-10}");
-    foreach (Room room in roomList)
+    foreach (Room room in roomList) 
     {
         if (room.IsAvail == true)
         {
-            if (room.GetType() == typeof(StandardRoom))
+            if (room.GetType() == typeof(StandardRoom)) //check room type (standard)
             {
                 Console.WriteLine($" {room.RoomNumber,-15} {room.BedConfiguration,-20} {room.DailyRate,-10}");
             }
@@ -189,7 +191,7 @@ void displayAllRoom()
     {
         if (room.IsAvail == true)
         {
-            if (room.GetType() == typeof(DeluxeRoom))
+            if (room.GetType() == typeof(DeluxeRoom)) //check room type (deluxe)
             {
                 Console.WriteLine($" {room.RoomNumber,-15} {room.BedConfiguration,-20} {room.DailyRate,-10}");
             }
@@ -219,8 +221,82 @@ void mainmenu()
 void registerGuest()
 {
     Console.WriteLine("Enter the name of the guest: ");
+    string? name = Convert.ToString(Console.ReadLine());
+    Console.WriteLine("Enter the passport number of the guest: ");
+    string? passportNo = Convert.ToString(Console.ReadLine());
+    Membership status = new Membership("ordinary", 0);
+    Guest guest = new Guest(name, passportNo, null, status );
+    guestList.Add(guest);
+    string guestdata = $"{name},{passportNo},{status.Status},{status.Points}"; //combine data
+    using (StreamWriter sw = new StreamWriter("Guests.csv", true))
+    {
+        sw.WriteLine(guestdata); //append to file
+    }
+    Console.WriteLine("Guest successfully registered!\npress anything to continue");
+    Console.ReadKey();
+    Console.WriteLine("");
+
 }
-//main progra
+
+void checkinGuest()
+{
+    displayAllGuest();
+
+    while (true)
+    {
+        Console.WriteLine("Which guest would you like to check in? (enter the S/N of the guest)");
+        int guestnum;
+        while (!int.TryParse(Console.ReadLine(), out guestnum))
+        {
+            Console.WriteLine("Please enter a valid number");
+        }
+        Guest selectedGuest;
+        while (true)
+        {
+            try
+            {
+                selectedGuest = guestList[guestnum - 1];
+                break;
+                
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Please enter a number that exists on the list");
+                continue;
+            }
+        }
+        if (selectedGuest.isCheckedin == true)
+        {
+            while (true)
+            {
+
+                Console.WriteLine("Selected guest has already checked in. Select this guest?(y/n)");
+                string? option = Convert.ToString(Console.ReadLine()).ToLower();
+                if (option != "y" || option != "n")
+                {
+                    Console.WriteLine("use \"y\" or \"n\" ");
+                    continue;
+                }
+                else if (option == "n")
+                {
+                    continue;
+
+                }
+                else if (option == "y")
+                {
+                    break;
+                }
+
+            }
+        }
+        else if (selectedGuest.isCheckedin == false)
+        {
+            Console.WriteLine()
+        }
+
+
+}
+//main program
 while (true)
 {
     mainmenu();
@@ -260,4 +336,17 @@ while (true)
 
             break;
         }
+    if (option == 3)
+    {
+        while (true)
+        {
+            registerGuest();
+            break;
+        }
+    }
+    if (option == 4)
+
+    {
+        checkinGuest();
+    }
 }

@@ -23,18 +23,17 @@ namespace S10221013_PRG2Assignment
 
         public double EarnPoints(double total)
         {
-            if (Status == "ordinary")
+            Points += Convert.ToInt32(total)/10;
+            //check if point is more than the threshold of memberstatus, if yes, then change to the next tier.
+            if (Points >= 100)
             {
-                Points = (int)total / 10;
+                Status = "Silver";
             }
-            else if (Status == "silver")
+            if (Points >= 200)
             {
-                Points = (int)total / 5;
+                Status = "Gold";
             }
-            else if (Status == "gold")
-            {
-                Points = (int)total / 2;
-            }
+            
             return Points;
         }
 
