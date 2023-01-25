@@ -40,7 +40,7 @@ void initroomdata()
         string bedconfig = roominfo[2];
         double dailyrate = double.Parse(roominfo[3]);
         bool availability = true;
-        // teacheck the availability of the room
+        // acheck the availability of the room
         
         for (int j = 1; j < stayData.Length; j++)
         {
@@ -108,8 +108,8 @@ void initroomdata()
 
 
 
-    //display the content of the roomlist
-    foreach (Room room in roomList)
+    //display the content of the roomlist TESTING PURPOSES
+    /* foreach (Room room in roomList)
     {
         if (room.IsAvail == false)
         {
@@ -117,6 +117,7 @@ void initroomdata()
         }
 
     }
+    */
 }
 
 initGuestData();
@@ -239,6 +240,7 @@ void registerGuest()
     string? passportNo = Convert.ToString(Console.ReadLine());
     Membership status = new Membership("ordinary", 0);
     Guest guest = new Guest(name, passportNo, null, status );
+    guest.IsCheckedin = false;
     guestList.Add(guest);
     string guestdata = $"{name},{passportNo},{status.Status},{status.Points}"; //combine data
     using (StreamWriter sw = new StreamWriter("Guests.csv", true))
@@ -260,7 +262,6 @@ Guest validateselectedguest()
         {
             Console.WriteLine("Which guest would you like to check in? (enter the S/N of the guest)");
             guestnum = Convert.ToInt32(Console.ReadLine());
-
             selectedGuest = guestList[guestnum - 1];
             break;
         }
@@ -281,12 +282,7 @@ Guest validateselectedguest()
 void checkinGuest()
 {
     displayAllGuestLessInfo();
-
-
-        
-        Guest selectedGuest = validateselectedguest();
-
-
+    Guest selectedGuest = validateselectedguest();
     while (true)
     {
         if (selectedGuest.IsCheckedin == true)
@@ -315,69 +311,127 @@ void checkinGuest()
         }
         else if (selectedGuest.IsCheckedin == false)
         {
-            Console.WriteLine("ok");
+            Console.WriteLine($"Guest selected: {selectedGuest.Name}");
             break;
         }
     }
+    DateTime checkin;
+    DateTime checkout;
 
-        
-
-
-
-    
-}
-    //main program
-while (true)
+    while (true)
     {
-        mainmenu();
-        int option;
         while (true)
         {
             try
             {
-                Console.Write("Your option:");
-                option = Convert.ToInt32(Console.ReadLine());
+                Console.WriteLine("Enter the check-in date (dd/mm/yyyy): ");
+                checkin = Convert.ToDateTime(Console.ReadLine());
+                break;
+
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Invalid input, please enter a valid date in (dd/mm/yyyy) format");
+
+            }
+        }
+        while (true)
+        {
+            try
+            {
+                Console.WriteLine("Enter the check-out date (dd/mm/yyyy): ");
+                checkout = Convert.ToDateTime(Console.ReadLine());
                 break;
             }
             catch (Exception)
             {
-                Console.WriteLine("Invalid input, please enter a number");
-            }
-        }
-        if (option == 1)
-        {
 
-            while (true)
-            {
-                displayAllGuest();
-                Console.WriteLine("\n Press anything to go back to the main menu");
-                Console.ReadKey();
-                Console.WriteLine(" "); //input key on next line
-                break;
-            }
-        }
-        if (option == 2)
-            while (true)
-            {
-                displayAllRoom();
-                Console.WriteLine("\n Press anything to go back to the main menu");
-                Console.ReadKey();
-                Console.WriteLine(" "); //input key on next line
+                Console.WriteLine("Invalid input, please enter a valid date in (dd/mm/yyyy) format");
 
-                break;
-            }
-        if (option == 3)
-        {
-            while (true)
-            {
-                registerGuest();
-                break;
             }
         }
-        if (option == 4)
+        if (checkout.Subtract(checkin).Days < 1)
 
         {
-            checkinGuest();
+            Console.WriteLine("Check-out date must be after check-in date");
+            continue;
         }
+        else
+        {
+            Console.WriteLine("ok it works pls work");
+            break;
+        }
+    }
+    
+
+
+
+
+
+
 }
+//main program
+while (true)
+{
+    mainmenu();
+    int option;
+    while (true)
+    {
+        try
+        {
+            Console.Write("Your option:");
+            option = Convert.ToInt32(Console.ReadLine());
+            break;
+        }
+        catch (Exception)
+        {
+            Console.WriteLine("Invalid input, please enter a number");
+        }
+    }
+    if (option == 1)
+    {
+
+        while (true)
+        {
+            displayAllGuest();
+            Console.WriteLine("\n Press anything to go back to the main menu");
+            Console.ReadKey();
+            Console.WriteLine(" "); //input key on next line
+            break;
+        }
+    }
+    else if (option == 2)
+    {
+        while (true)
+        {
+            displayAllRoom();
+            Console.WriteLine("\n Press anything to go back to the main menu");
+            Console.ReadKey();
+            Console.WriteLine(" "); //input key on next line
+
+            break;
+        }
+    }
+    if (option == 3)
+    {
+        while (true)
+        {
+            registerGuest();
+            break;
+        }
+    }
+    else if (option == 4)
+
+    {
+        checkinGuest();
+    }
+    else
+    {
+        Console.WriteLine("you stupid ah? choose one of the options within the range of the lsit");
+        continue;
+    }
+
+}
+    
+
 
