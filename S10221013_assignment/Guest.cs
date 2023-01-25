@@ -22,7 +22,7 @@ namespace S10221013_PRG2Assignment
 
         public Membership Member { get; set; }
 
-        public bool isCheckedin { get; set; }
+        public bool IsCheckedin { get; set; }
 
         public Guest() { }
 

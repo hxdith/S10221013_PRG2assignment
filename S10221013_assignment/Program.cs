@@ -137,7 +137,9 @@ void initGuestData()
             {
                 DateTime checkin = DateTime.Parse(gueststayinfo[3]);
                 DateTime checkout = DateTime.Parse(gueststayinfo[4]);
-                guestList.Add( new Guest(name, passportNo, new Stay(checkin, checkout), new Membership(membership, points)));
+                Guest guest = new Guest(name, passportNo, new Stay(checkin, checkout), new Membership(membership, points));
+                guest.IsCheckedin = bool.Parse(gueststayinfo[2]);
+                guestList.Add(guest);
                 break;
             }
         }
@@ -167,7 +169,18 @@ void displayAllGuest()
         i = i + 1;
     }
 }
+void displayAllGuestLessInfo()
+{
+    Console.WriteLine($"\n{"S/N",-3} {"Guests",-7} {"PassportNo",-10}");
+    Console.WriteLine("============================================");
+    int i = 1;
+    foreach (Guest guest in guestList)
+    {
 
+        Console.WriteLine($"{i,-3} {guest.Name,-7} {guest.PassportNum,-10}");
+        i = i + 1;
+    }
+}
 void displayAllRoom()
 {
 
@@ -237,116 +250,134 @@ void registerGuest()
     Console.WriteLine("");
 
 }
-
-void checkinGuest()
+Guest validateselectedguest()
 {
-    displayAllGuest();
-
-    while (true)
-    {
-        Console.WriteLine("Which guest would you like to check in? (enter the S/N of the guest)");
-        int guestnum;
-        while (!int.TryParse(Console.ReadLine(), out guestnum))
-        {
-            Console.WriteLine("Please enter a valid number");
-        }
-        Guest selectedGuest;
-        while (true)
-        {
-            try
-            {
-                selectedGuest = guestList[guestnum - 1];
-                break;
-                
-            }
-            catch (Exception)
-            {
-                Console.WriteLine("Please enter a number that exists on the list");
-                continue;
-            }
-        }
-        if (selectedGuest.isCheckedin == true)
-        {
-            while (true)
-            {
-
-                Console.WriteLine("Selected guest has already checked in. Select this guest?(y/n)");
-                string? option = Convert.ToString(Console.ReadLine()).ToLower();
-                if (option != "y" || option != "n")
-                {
-                    Console.WriteLine("use \"y\" or \"n\" ");
-                    continue;
-                }
-                else if (option == "n")
-                {
-                    continue;
-
-                }
-                else if (option == "y")
-                {
-                    break;
-                }
-
-            }
-        }
-        else if (selectedGuest.isCheckedin == false)
-        {
-            Console.WriteLine()
-        }
-
-
-}
-//main program
-while (true)
-{
-    mainmenu();
-    int option;
+    int guestnum;
+    Guest selectedGuest;
     while (true)
     {
         try
         {
-            Console.Write("Your option:");
-            option = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine("Which guest would you like to check in? (enter the S/N of the guest)");
+            guestnum = Convert.ToInt32(Console.ReadLine());
+
+            selectedGuest = guestList[guestnum - 1];
             break;
+        }
+
+        catch (ArgumentOutOfRangeException)
+        {
+            Console.WriteLine("Please enter a number within te range");
         }
         catch (Exception)
         {
             Console.WriteLine("Invalid input, please enter a number");
         }
-    }
-    if (option == 1)
-    {
 
-        while (true)
-        {
-            displayAllGuest();
-            Console.WriteLine("\n Press anything to go back to the main menu");
-            Console.ReadKey();
-            Console.WriteLine(" "); //input key on next line
-            break;
-        }
-    }
-    if (option == 2)
-        while (true)
-        {
-            displayAllRoom();
-            Console.WriteLine("\n Press anything to go back to the main menu");
-            Console.ReadKey();
-            Console.WriteLine(" "); //input key on next line
 
-            break;
-        }
-    if (option == 3)
-    {
-        while (true)
-        {
-            registerGuest();
-            break;
-        }
     }
-    if (option == 4)
-
-    {
-        checkinGuest();
-    }
+    return selectedGuest;
 }
+void checkinGuest()
+{
+    displayAllGuestLessInfo();
+
+
+        
+        Guest selectedGuest = validateselectedguest();
+
+
+    while (true)
+    {
+        if (selectedGuest.IsCheckedin == true)
+        {
+
+
+            Console.WriteLine("Selected guest has already checked in. Select this guest?(y/n)");
+            string? option = Convert.ToString(Console.ReadLine()).ToLower();
+            Console.WriteLine(option);
+            if (option != "y" && option != "n")
+            {
+                Console.WriteLine("write \"y\" or \"n\" only ");
+                continue;
+            }
+            else if (option == "n")
+            {
+                selectedGuest = validateselectedguest();
+                continue;
+
+            }
+            else if (option == "y")
+            {
+                break;
+            }
+
+        }
+        else if (selectedGuest.IsCheckedin == false)
+        {
+            Console.WriteLine("ok");
+            break;
+        }
+    }
+
+        
+
+
+
+    
+}
+    //main program
+while (true)
+    {
+        mainmenu();
+        int option;
+        while (true)
+        {
+            try
+            {
+                Console.Write("Your option:");
+                option = Convert.ToInt32(Console.ReadLine());
+                break;
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Invalid input, please enter a number");
+            }
+        }
+        if (option == 1)
+        {
+
+            while (true)
+            {
+                displayAllGuest();
+                Console.WriteLine("\n Press anything to go back to the main menu");
+                Console.ReadKey();
+                Console.WriteLine(" "); //input key on next line
+                break;
+            }
+        }
+        if (option == 2)
+            while (true)
+            {
+                displayAllRoom();
+                Console.WriteLine("\n Press anything to go back to the main menu");
+                Console.ReadKey();
+                Console.WriteLine(" "); //input key on next line
+
+                break;
+            }
+        if (option == 3)
+        {
+            while (true)
+            {
+                registerGuest();
+                break;
+            }
+        }
+        if (option == 4)
+
+        {
+            checkinGuest();
+        }
+}
+

@@ -25,11 +25,11 @@ namespace S10221013_PRG2Assignment
         {
             Points += Convert.ToInt32(total)/10;
             //check if point is more than the threshold of memberstatus, if yes, then change to the next tier.
-            if (Points >= 100)
+            if (Points >= 100 && Status =="Ordinary")
             {
                 Status = "Silver";
             }
-            if (Points >= 200)
+            if (Points >= 200 && Status == "Silver")
             {
                 Status = "Gold";
             }
