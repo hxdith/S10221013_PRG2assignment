@@ -18,7 +18,7 @@ namespace S10221013_PRG2Assignment
 
         public DateTime CheckoutDate { get; set; }
 
-        public List<Room> RoomList { get; set; }
+        public List<Room> RoomList { get; set; } = new List<Room>();
 
         public Stay() { }
 
@@ -35,13 +35,16 @@ namespace S10221013_PRG2Assignment
 
         public double CalculateTotal()
         {
-
-            foreach (Room room in RoomList)
+            double total = 0;
+            if(RoomList.Count <= 0)
             {
-                double total = +room.CalculateCharges() * (CheckinDate.Subtract(CheckoutDate).Days);
-                return total;
+                foreach (Room room in RoomList)
+                {
+                    total = +room.CalculateCharges() * (CheckinDate.Subtract(CheckoutDate).Days);
+
+                } 
             }
-            return 0;
+            return total;
         }
 
         public override string ToString()

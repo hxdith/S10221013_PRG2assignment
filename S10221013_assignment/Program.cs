@@ -327,7 +327,7 @@ void checkinGuest()
     }
     DateTime checkin;
     DateTime checkout;
-
+    Stay checkinstay;
     while (true)
     {
         while (true)
@@ -360,7 +360,7 @@ void checkinGuest()
 
             }
         }
-        if (checkout.Subtract(checkin).Days <= 1)
+        if (checkout.Subtract(checkin).Days < 1)
 
         {
             Console.WriteLine("Check-out date must be after check-in date or at least 1 day after check-in date");
@@ -368,11 +368,49 @@ void checkinGuest()
         }
         else
         {
-            Stay stay = new Stay(checkin, checkout);
-            displayAllRoom();
-            break;
+            checkinstay = new Stay(checkin, checkout);
+            
         }
-        
+        displayAllRoom();
+        Console.WriteLine("Which room would you like to check in? (enter the room number)");
+        int roomnum = 0;
+        while (true)
+        {
+            try
+            {
+                roomnum = Convert.ToInt32(Console.ReadLine());
+                break;
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Invalid input, please enter a room number");
+
+            }
+        } 
+        foreach (Room room in roomList)
+        {
+            if (room.RoomNumber == roomnum)
+            {
+                if (room.IsAvail == true)
+                {
+                    room.IsAvail = false;
+                    selectedGuest.IsCheckedin = true;
+                    selectedGuest.HotelStay = checkinstay;
+                    
+                    Console.WriteLine("Guest successfully checked in!");
+                    Console.WriteLine("press anything to continue");
+                    Console.ReadKey();
+                    Console.WriteLine("");
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Room is not available, please select another room");
+                    break;
+                }
+            }
+        }
+            break;
     }
     
 
