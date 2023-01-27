@@ -12,6 +12,12 @@
 
 using S10221013_PRG2Assignment;
 using System.Runtime.CompilerServices;
+using System.IO;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
 // reads the data from the files and store them in an array
 string[] roomData = File.ReadAllLines("Rooms.csv");
 string[] guestData = File.ReadAllLines("Guests.csv");
@@ -26,9 +32,6 @@ initroomdata();
 // This method intialize the guest list using the relevant information from the data files
 void initroomdata()
 {
-
-
-
 
     // read data from room data
     for (int i = 1; i < roomData.Length; i++)
@@ -243,13 +246,20 @@ void registerGuest()
     guest.IsCheckedin = false;
     guestList.Add(guest);
     string guestdata = $"{name},{passportNo},{status.Status},{status.Points}"; //combine data
-    using (StreamWriter sw = new StreamWriter("Guests.csv", true))
+    string filename = "Guests.csv";
+    string projectRoot = System.AppDomain.CurrentDomain.BaseDirectory;
+    string filePath = Path.Combine(projectRoot, filename);
+
+    /* using (StreamWriter sw = new StreamWriter("Guests.csv", true))//write to file
     {
-        sw.WriteLine(guestdata); //append to file
-    }
+        sw.WriteLine(guestdata);
+    }    */
+    File.AppendAllText(filePath, guestdata);
+
     Console.WriteLine("Guest successfully registered!\npress anything to continue");
-    Console.ReadKey();
-    Console.WriteLine("");
+        Console.ReadKey();
+        Console.WriteLine("");
+
 
 }
 Guest validateselectedguest()
@@ -350,17 +360,19 @@ void checkinGuest()
 
             }
         }
-        if (checkout.Subtract(checkin).Days < 1)
+        if (checkout.Subtract(checkin).Days <= 1)
 
         {
-            Console.WriteLine("Check-out date must be after check-in date");
+            Console.WriteLine("Check-out date must be after check-in date or at least 1 day after check-in date");
             continue;
         }
         else
         {
-            Console.WriteLine("ok it works pls work");
+            Stay stay = new Stay(checkin, checkout);
+            displayAllRoom();
             break;
         }
+        
     }
     
 
@@ -412,7 +424,7 @@ while (true)
             break;
         }
     }
-    if (option == 3)
+    else if (option == 3)
     {
         while (true)
         {
@@ -425,11 +437,16 @@ while (true)
     {
         checkinGuest();
     }
+    else if (option == 5)
+    {
+        break;
+    }
     else
     {
-        Console.WriteLine("you stupid ah? choose one of the options within the range of the lsit");
+        Console.WriteLine("Please choose one of the options in the list!!");
         continue;
     }
+    
 
 }
     
