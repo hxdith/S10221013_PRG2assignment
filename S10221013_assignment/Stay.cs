@@ -18,7 +18,7 @@ namespace S10221013_PRG2Assignment
 
         public DateTime CheckoutDate { get; set; }
 
-        public List<Room> RoomList { get; set; } = new List<Room>();
+        public List<Room> RoomList { get; set; }
 
         public Stay() { }
 
@@ -28,7 +28,11 @@ namespace S10221013_PRG2Assignment
             CheckoutDate = checkout;
         }
         public void AddRoom(Room room)
-        {
+        { 
+            if (RoomList == null) //if not empty create new list
+            {
+                RoomList = new List<Room>();
+            }
             RoomList.Add(room);
 
         }
@@ -40,7 +44,11 @@ namespace S10221013_PRG2Assignment
             {
                 foreach (Room room in RoomList)
                 {
-                    total = +room.CalculateCharges() * (CheckinDate.Subtract(CheckoutDate).Days);
+                    if (room.IsAvail == false) //runs check if an available room is added inside by accident
+                    {
+                        total = +room.CalculateCharges() * (CheckinDate.Subtract(CheckoutDate).Days);
+                    }
+
 
                 } 
             }

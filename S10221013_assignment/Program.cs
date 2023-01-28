@@ -28,6 +28,7 @@ string[] stayData = File.ReadAllLines("Stays.csv");
 
 List<Guest> guestList = new List<Guest>();
 List<Room> roomList = new List<Room>();
+List<Stay> StayList = new List<Stay>();
 initroomdata();
 // This method intialize the guest list using the relevant information from the data files
 void initroomdata()
@@ -43,16 +44,20 @@ void initroomdata()
         string bedconfig = roominfo[2];
         double dailyrate = double.Parse(roominfo[3]);
         bool availability = true;
+        bool requirewifi = false;
+        bool requirebreakfast = false ;
+        bool requireadditionalbed = false;
+
         // acheck the availability of the room
-        
+
         for (int j = 1; j < stayData.Length; j++)
         {
 
             string[] stayinfo = stayData[j].Split(','); //measures: if both column happens to have null or empty string.
             //default case
-            int notnullinfo1 = 0; // set placeholder value for the room cells
-            int notnullinfo2 = 0;
-            if (int.TryParse(stayinfo[9], out notnullinfo1) && int.TryParse(stayinfo[5], out notnullinfo2)) //check if the cell is empty, otherwise convert the cell the int * this is assuming only 2 rooms can be booked per person
+            int stayRoominfo1 = 0; // set placeholder value for the room cells
+            int stayRoominfo2 = 0;
+            if (int.TryParse(stayinfo[5], out stayRoominfo1) && int.TryParse(stayinfo[9], out stayRoominfo2)) //check if the cell is empty, otherwise convert the cell the int * this is assuming only 2 rooms can be booked per person
             {
                  
             }
@@ -69,42 +74,142 @@ void initroomdata()
                 notnullinfo2 = int.Parse(stayinfo[5]);
             } */
 
-                
-            if (roomnumber == notnullinfo1 || roomnumber == notnullinfo2) // checks if the room number is in a column in the stay data file.
-                {
-                    //check the check-in column to see if its available
-                    if (stayinfo[2].ToLower() == "true") //to lower so that in the case where the text gets typed with the wrong capitalisation of letters, the code doesnt skip this step by default.
-                        {
-                            // if it is present in the stay data list and the check-in column shows true, then the room is not available.
-                            availability = false;
 
-                            break;
-                        }
-                    else if (stayinfo[2].ToLower() == "false")
+            if (roomnumber == stayRoominfo1) // checks if the room number is in a column in the stay data file.
+            {
+
+                //check the check-in column to see if its available. Checks the second column of the csv file (isCheckedin)
+                if (stayinfo[2].ToLower() == "true") //to lower so that in the case where the text gets typed with the wrong capitalisation of letters, the code doesnt skip this step by default.
+                {
+
+                    // if it is present in the stay data list and the check-in column shows true, then the room is not available.
+                    availability = false;
+
+                }
+                else if (stayinfo[2].ToLower() == "false")
+                {
+                    // if it is present in the stay data list and the check-in column shows false, then the room is available.
+                    availability = true;
+
+                }
+                if (stayinfo[6] != null && stayinfo[6] != "")
+                {
+                    if (stayinfo[6].ToLower() == "true") //check wifi requirement
                     {
-                        // if it is present in the stay data list and the check-in column shows false, then the room is available.
-                        availability = true;
-                        break;
+                        requirewifi = true;
+                    }
+                    else
+                    {
+                        requirewifi = false;
+                    }
+                }
+                if (stayinfo[7] != null && stayinfo[7] != "")
+                {
+                    if (stayinfo[7].ToLower() == "true") //check breakfast requirement
+                    {
+                        requirebreakfast = true;
 
                     }
+                    else
+                    {
+                        requirebreakfast = false;
+                    }
+                }
+                if (stayinfo[8] != null && stayinfo[8] != "")
+                {
+                    if (stayinfo[8].ToLower() == "true") //check breakfast requirement
+                    {
+                        requireadditionalbed = true;
 
+                    }
+                    else
+                    {
+                        requireadditionalbed = false;
+                    }
                 }
 
 
+            }
+            else if (roomnumber == stayRoominfo2)
+            {
+                //check the check-in column to see if its available. Checks the second column of the csv file (isCheckedin)
+                if (stayinfo[2].ToLower() == "true") //to lower so that in the case where the text gets typed with the wrong capitalisation of letters, the code doesnt skip this step by default.
+                {
+
+                    // if it is present in the stay data list and the check-in column shows true, then the room is not available.
+                    availability = false;
+
+                }
+                else if (stayinfo[2].ToLower() == "false")
+                {
+                    // if it is present in the stay data list and the check-in column shows false, then the room is available.
+                    availability = true;
+
+                }
+                if (stayinfo[10] != null && stayinfo[10] != "")
+                {
+                    if (stayinfo[10].ToLower() == "true") //check wifi requirement
+                    {
+                        requirewifi = true;
+                    }
+                    else
+                    {
+                        requirewifi = false;
+                    }
+                }
+
+
+                if (stayinfo[11] != null && stayinfo[11] != "")
+                {
+                    if (stayinfo[11].ToLower() == "true") //check breakfast requirement
+                    {
+                        requirebreakfast = true;
+
+                    }
+                    else
+                    {
+                        requirebreakfast = false;
+                    }
+                }
+                if (stayinfo[12] != null && stayinfo[12] != "")
+                {
+                    if (stayinfo[12].ToLower() == "true") //check breakfast requirement
+                    {
+                        requireadditionalbed = true;
+
+                    }
+                    else
+                    {
+                        requireadditionalbed = false;
+                    }
+                }
+                break;
+
+            }
+
         }
+
         //now create the room object
         if (roomtype == "standard")
         {
-            StandardRoom room = new StandardRoom(roomnumber, bedconfig, dailyrate, availability);
-            roomList.Add(room);
-
+        //change the room data according to stay data
+            {
+                StandardRoom room = new StandardRoom(roomnumber, bedconfig, dailyrate, availability);
+                room.RequireWifi = requirewifi;
+                room.RequireBreakfast = requirebreakfast;
+                roomList.Add(room);
+            }
         }
         else if (roomtype == "deluxe")
         {
             DeluxeRoom room = new DeluxeRoom(roomnumber, bedconfig, dailyrate, availability);
+            room.AdditionalBed = requireadditionalbed;
             roomList.Add(room);
         }
 
+        
+        
+        
 
     }
 
@@ -150,7 +255,7 @@ void initGuestData()
 
 
     }
-    
+
 }
 /* foreach (Guest guest in guestList)
 {
@@ -278,7 +383,7 @@ Guest validateselectedguest()
 
         catch (ArgumentOutOfRangeException)
         {
-            Console.WriteLine("Please enter a number within te range");
+            Console.WriteLine("Please enter a number within the range");
         }
         catch (Exception)
         {
@@ -289,9 +394,118 @@ Guest validateselectedguest()
     }
     return selectedGuest;
 }
+Room selectRoom()
+{
+    Console.WriteLine("Which room would you like to check in? (enter the room number)");
+    Console.Write("Your Option: ");
+    int roomnum = 0;
+    while (true)
+    {
+        try
+        {
+            roomnum = Convert.ToInt32(Console.ReadLine());
+            break;
+        }
+        catch (Exception)
+        {
+            Console.WriteLine("Invalid input, please enter a room number");
+
+        }
+    }
+    foreach (Room room in roomList)
+    {
+        if (room.RoomNumber == roomnum)
+        {
+            if (room.IsAvail == true)
+            {
+                if (room.GetType() == typeof(StandardRoom))
+                {
+
+                    while (true)
+                    {
+                        Console.WriteLine("Require Wifi? (y/n)");
+                        Console.Write("Your option: ");
+                        string? option = Convert.ToString(Console.ReadLine());
+                        option = option.ToLower();
+                        if (option != "y" && option != "n")
+                        {
+                            Console.WriteLine("Invalid input, please enter \"y\" or \"n\"");
+                            continue;
+                        }
+                        else if (option == "y")
+                        {
+                            ((StandardRoom)room).RequireWifi = true;
+                            break;
+                        }
+                        else if (option == "n")
+                        {
+                            ((StandardRoom)room).RequireWifi = false;
+                            break;
+                        }
+                    }
+
+                    while (true)
+                    {
+                        Console.WriteLine("Require breakfast? (y/n)");
+                        Console.Write("Your option: ");
+                        string? option = Convert.ToString(Console.ReadLine());
+                        option = option.ToLower();
+                        if (option != "y" && option != "n")
+                        {
+                            Console.WriteLine("Invalid input, please enter \"y\" or \"n\"");
+                            continue;
+                        }
+                        else if (option == "y")
+                        {
+                            ((StandardRoom)room).RequireBreakfast = true;
+
+                            break;
+                        }
+                        else if (option == "n")
+                        {
+                            ((StandardRoom)room).RequireBreakfast = false;
+                            break;
+                        }
+                    }
+                    return room;
+                }
+                else if (room.GetType() == typeof(DeluxeRoom))
+                {
+                    while (true)
+                    {
+                        Console.WriteLine("Require additional bed? (y/n)");
+                        Console.Write("Your option: ");
+                        string? option = Convert.ToString(Console.ReadLine());
+                        option = option.ToLower();
+                        if (option != "y" && option != "n")
+                        {
+                            Console.WriteLine("Invalid input, please enter \"y\" or \"n\"");
+                            continue;
+                        }
+                        else if (option == "y")
+                        {
+                            ((DeluxeRoom)room).AdditionalBed = true;
+                            break;
+                        }
+                        else if (option == "n")
+                        {
+                            ((DeluxeRoom)room).AdditionalBed = false;
+                            break;
+                        }
+                        
+                    }
+                    return room;
+                }
+            
+            }
+        }
+    }
+    return null;
+}
 void checkinGuest()
 {
     displayAllGuestLessInfo();
+
     Guest selectedGuest = validateselectedguest();
     while (true)
     {
@@ -300,7 +514,8 @@ void checkinGuest()
 
 
             Console.WriteLine("Selected guest has already checked in. Select this guest?(y/n)");
-            string? option = Convert.ToString(Console.ReadLine()).ToLower();
+            string? option = Convert.ToString(Console.ReadLine());
+            option = option.ToLower();
             Console.WriteLine(option);
             if (option != "y" && option != "n")
             {
@@ -372,51 +587,99 @@ void checkinGuest()
             
         }
         displayAllRoom();
-        Console.WriteLine("Which room would you like to check in? (enter the room number)");
-        int roomnum = 0;
         while (true)
         {
-            try
+            Room room = selectRoom();
+            if (room == null)
             {
-                roomnum = Convert.ToInt32(Console.ReadLine());
+                Console.WriteLine("room selected does not exist, please try again!");
+                continue;
+            }
+            room.IsAvail = false;
+            selectedGuest.IsCheckedin = true;
+            selectedGuest.HotelStay = checkinstay;
+            checkinstay.AddRoom(room);
+            break;
+        }
+        
+
+
+        Room room2;
+        while (true)
+        {
+            Console.WriteLine("Another room? (y/n)");
+            Console.Write("Your option: ");
+            string? option = Convert.ToString(Console.ReadLine());
+            option = option.ToLower();
+            if (option != "y" && option != "n")
+            {
+                Console.WriteLine("Invalid input, please enter \"y\" or \"n\"");
+                continue;
+            }
+            else if (option == "y")
+            {
+                displayAllRoom();
+                while (true)
+                {
+                    room2 = selectRoom();
+                    if (room2 == null)
+                    {
+                        Console.WriteLine("room selected does not exist, please try again!");
+
+                    }
+                    else
+                    {
+                        room2.IsAvail = false;
+                        selectedGuest.HotelStay = checkinstay;
+                        checkinstay.AddRoom(room2);
+                        break;
+                    }
+                }
+
+                
+                room2.IsAvail = false;
+                selectedGuest.HotelStay = checkinstay;
+                checkinstay.AddRoom(room2);
                 break;
             }
-            catch (Exception)
+            else if (option == "n")
             {
-                Console.WriteLine("Invalid input, please enter a room number");
-
-            }
-        } 
-        foreach (Room room in roomList)
-        {
-            if (room.RoomNumber == roomnum)
-            {
-                if (room.IsAvail == true)
-                {
-                    room.IsAvail = false;
-                    selectedGuest.IsCheckedin = true;
-                    selectedGuest.HotelStay = checkinstay;
-                    
-                    Console.WriteLine("Guest successfully checked in!");
-                    Console.WriteLine("press anything to continue");
-                    Console.ReadKey();
-                    Console.WriteLine("");
-                    break;
-                }
-                else
-                {
-                    Console.WriteLine("Room is not available, please select another room");
-                    break;
-                }
+                break;
             }
         }
-            break;
+
+                    
+        Console.WriteLine("Guest successfully checked in!");
+        Console.WriteLine("press anything to continue");
+        Console.ReadKey();
+        Console.WriteLine("");
+        break;
+             
     }
-    
-
-
-
-
+}
+void displayStayDetails()
+{
+    displayAllGuestLessInfo();
+    Console.WriteLine("Change the stay details of which Guest? (Enter S/N number of the guest)");
+    int guestNum = 0;
+    Guest selectedGuest;
+    while (true)
+    {
+        try
+        {
+            guestNum = Convert.ToInt32(Console.ReadLine());
+            selectedGuest = guestList[guestNum - 1];
+            break;
+        }
+        catch (Exception)
+        {
+            Console.WriteLine("Please enter a valid number or a number that is in the list");
+        }
+    }
+    Console.WriteLine($"Selected Guest: {selectedGuest.Name}");
+    Console.WriteLine($"Selected Guest's stay: {selectedGuest.HotelStay.CheckinDate.ToShortDateString()} to {selectedGuest.HotelStay.CheckoutDate.ToShortDateString()}");
+    Console.WriteLine($"Room number: ");
+    //when in the initialisation, guest list and stay list are set to be the same length with the same index, so that means the stay list can be accessed by the same index as the guest list.
 
 
 }
@@ -473,9 +736,27 @@ while (true)
     else if (option == 4)
 
     {
-        checkinGuest();
+        while (true)
+        {
+            checkinGuest();
+            Console.WriteLine("\n Press anything to go back to the main menu");
+            Console.ReadKey();
+            Console.WriteLine(" "); //input key on next line
+            break; 
+        }
     }
     else if (option == 5)
+    {
+        while (true)
+        {
+            displayStayDetails();
+            Console.WriteLine("\n Press anything to go back to the main menu");
+            Console.ReadKey();
+            Console.WriteLine(" "); //input key on next line
+            break; 
+        }
+    }
+    else if (option == 6)
     {
         break;
     }
@@ -484,9 +765,10 @@ while (true)
         Console.WriteLine("Please choose one of the options in the list!!");
         continue;
     }
-    
-
 }
+
+
+
     
 
 
