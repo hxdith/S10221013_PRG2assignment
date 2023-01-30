@@ -47,7 +47,8 @@ void initroomdata()
         bool requirewifi = false;
         bool requirebreakfast = false ;
         bool requireadditionalbed = false;
-
+        DateTime checkin;
+        DateTime checkout;
         // acheck the availability of the room
 
         for (int j = 1; j < stayData.Length; j++)
@@ -192,7 +193,9 @@ void initroomdata()
         //now create the room object
         if (roomtype == "standard")
         {
-        //change the room data according to stay data
+            //change the room data according to stay data
+
+
             {
                 StandardRoom room = new StandardRoom(roomnumber, bedconfig, dailyrate, availability);
                 room.RequireWifi = requirewifi;
@@ -246,7 +249,24 @@ void initGuestData()
             {
                 DateTime checkin = DateTime.Parse(gueststayinfo[3]);
                 DateTime checkout = DateTime.Parse(gueststayinfo[4]);
-                Guest guest = new Guest(name, passportNo, new Stay(checkin, checkout), new Membership(membership, points));
+                int roomnumber = 0;
+                int roomnumber2 = 0;
+                if (int.TryParse(gueststayinfo[5], out roomnumber))
+                {
+                }
+                if (int.TryParse(gueststayinfo[9], out roomnumber2))
+                {
+                }
+                Stay stayduration = new Stay(checkin, checkout);
+                if (roomnumber != 0)
+                {
+                    stayduration.AddRoom(roomList.Find(x => x.RoomNumber == roomnumber));
+                }
+                if (roomnumber2 != 0)
+                {
+                    stayduration.AddRoom(roomList.Find(x => x.RoomNumber == roomnumber2));
+                }
+                Guest guest = new Guest(name, passportNo, stayduration, new Membership(membership, points));
                 guest.IsCheckedin = bool.Parse(gueststayinfo[2]);
                 guestList.Add(guest);
                 break;
@@ -268,59 +288,60 @@ void initGuestData()
 void displayAllGuest()
 {
     
-    Console.WriteLine($"\n{"S/N",-3} {"Guests",-7} {"PassportNo",-10} {"Membership Status",-15}");
-    Console.WriteLine("============================================");
+    Console.WriteLine($"\n|{"S/N",-4}|{"Guests",-15}|{"PassportNo",-10}|{"Membership Status",-15}|");
+    Console.WriteLine("---------------------------------------------------------");
     int i = 1;
     foreach (Guest guest in guestList)
     {
 
-        Console.WriteLine($"{i,-3} {guest.Name,-7} {guest.PassportNum,-10} {guest.Member.Status,-15} ");
+        Console.WriteLine($"|{i,-4}|{guest.Name,-15}|{guest.PassportNum,-10}|{guest.Member.Status,-15}|");
         i = i + 1;
     }
 }
 void displayAllGuestLessInfo()
 {
-    Console.WriteLine($"\n{"S/N",-3} {"Guests",-7} {"PassportNo",-10}");
-    Console.WriteLine("============================================");
+    Console.WriteLine($"\n{"S/N",-4}|{"Guests",-15}|{"PassportNo",-10}|");
+    Console.WriteLine("---------------------------------------------------------");
     int i = 1;
     foreach (Guest guest in guestList)
     {
 
-        Console.WriteLine($"{i,-3} {guest.Name,-7} {guest.PassportNum,-10}");
+        Console.WriteLine($"|{i,-4}|{guest.Name,-15}|{guest.PassportNum,-10}|");
         i = i + 1;
     }
 }
 void displayAllRoom()
 {
 
-    Console.WriteLine("==================================================================================================");
+    Console.WriteLine("------------------------------------------------------------------------------------------");
     Console.WriteLine("All available rooms: ");
     Console.WriteLine("Standard Rooms: ");
-    Console.WriteLine($" {"Room Number",-15} {"Bed Configuration",-20} {"Daily Rate",-10}");
+    Console.WriteLine($"|{"Room Number",-15}|{"Bed Configuration",-20}|{"Daily Rate",-10}|");
     foreach (Room room in roomList) 
     {
         if (room.IsAvail == true)
         {
             if (room.GetType() == typeof(StandardRoom)) //check room type (standard)
             {
-                Console.WriteLine($" {room.RoomNumber,-15} {room.BedConfiguration,-20} {room.DailyRate,-10}");
+                Console.WriteLine($"|{room.RoomNumber,-15}|{room.BedConfiguration,-20}|{room.DailyRate,-10}|");
             }
         }
     }
+    Console.WriteLine("----------------------------------------------------");
     Console.WriteLine("Deluxe Rooms: ");
-    Console.WriteLine($" {"Room Number",-15} {"Bed Configuration",-20} {"Daily Rate",-10}");
+    Console.WriteLine($"|{"Room Number",-15}|{"Bed Configuration",-20}|{"Daily Rate",-10}|");
     foreach (Room room in roomList)
     {
         if (room.IsAvail == true)
         {
             if (room.GetType() == typeof(DeluxeRoom)) //check room type (deluxe)
             {
-                Console.WriteLine($" {room.RoomNumber,-15} {room.BedConfiguration,-20} {room.DailyRate,-10}");
+                Console.WriteLine($"|{room.RoomNumber,-15}|{room.BedConfiguration,-20}|{room.DailyRate,-10}|");
             }
 
         }
     }
-
+    Console.WriteLine("----------------------------------------------------");
 }
 
 void mainmenu()
@@ -361,9 +382,7 @@ void registerGuest()
     }    */
     File.AppendAllText(filePath, guestdata);
 
-    Console.WriteLine("Guest successfully registered!\npress anything to continue");
-        Console.ReadKey();
-        Console.WriteLine("");
+    Console.WriteLine("Guest successfully registered!");
 
 
 }
@@ -472,7 +491,7 @@ Room selectRoom()
                 else if (room.GetType() == typeof(DeluxeRoom))
                 {
                     while (true)
-                    {wadsdasda
+                    {
                         Console.WriteLine("Require additional bed? (y/n)");
                         Console.Write("Your option: ");
                         string? option = Convert.ToString(Console.ReadLine());
@@ -625,22 +644,16 @@ void checkinGuest()
                     if (room2 == null)
                     {
                         Console.WriteLine("room selected does not exist, please try again!");
-
+                        continue;
                     }
-                    else
-                    {
-                        room2.IsAvail = false;
-                        selectedGuest.HotelStay = checkinstay;
-                        checkinstay.AddRoom(room2);
-                        break;
-                    }
+                    room2.IsAvail = false;
+                    selectedGuest.HotelStay = checkinstay;
+                    checkinstay.AddRoom(room2);
+                    break;
                 }
-
-                
-                room2.IsAvail = false;
-                selectedGuest.HotelStay = checkinstay;
-                checkinstay.AddRoom(room2);
                 break;
+                
+
             }
             else if (option == "n")
             {
@@ -650,9 +663,6 @@ void checkinGuest()
 
                     
         Console.WriteLine("Guest successfully checked in!");
-        Console.WriteLine("press anything to continue");
-        Console.ReadKey();
-        Console.WriteLine("");
         break;
              
     }
@@ -676,12 +686,52 @@ void displayStayDetails()
             Console.WriteLine("Please enter a valid number or a number that is in the list");
         }
     }
-    Console.WriteLine($"Selected Guest: {selectedGuest.Name}");
-    Console.WriteLine($"Selected Guest's stay: {selectedGuest.HotelStay.CheckinDate.ToShortDateString()} to {selectedGuest.HotelStay.CheckoutDate.ToShortDateString()}");
-    Console.WriteLine($"Room number: ");
-    //when in the initialisation, guest list and stay list are set to be the same length with the same index, so that means the stay list can be accessed by the same index as the guest list.
+    
+    if (selectedGuest.IsCheckedin != false || selectedGuest.HotelStay != null)
+    {
+        Console.WriteLine($"Selected Guest: {selectedGuest.Name}");
+        Console.WriteLine($"check-in: {selectedGuest.HotelStay.CheckinDate.ToShortDateString()}\ncheckout: {selectedGuest.HotelStay.CheckoutDate.ToShortDateString()}");
+        string roomtype = "";
+
+        Console.WriteLine("Room(s): ");
+        foreach (Room r in selectedGuest.HotelStay.RoomList)
+        {
+            if (r.GetType() == typeof(StandardRoom))
+            {
+                roomtype = "Standard";
+            }
+            else if (r.GetType() == typeof(DeluxeRoom))
+            {
+                roomtype = "Deluxe";
+            }
+
+            Console.WriteLine($"Room type: {roomtype}, Room number: {r.RoomNumber}, Bed Configuration: {r.BedConfiguration}, Daily Rate: {r.DailyRate}");
+        } 
+        
+    }
+    else
+    {
+        Console.WriteLine("Guest has not checked in, please update the stay details of the guest!");
+    }
 
 
+}
+void displaystaydetails()
+{
+    Console.WriteLine($"\n|{"S/N",-3}|{"Guests",-15}|{"check-in Date",-15}|{"check-out Date",-15}|");
+    Console.WriteLine("---------------------------------------------------------");
+    int i = 1;
+    foreach (Guest guest in guestList)
+    {
+
+        Console.WriteLine($"|{i,-3}|{guest.Name,-15}|{guest.HotelStay.CheckinDate.ToShortDateString(),-15}|{guest.HotelStay.CheckoutDate.ToShortDateString(),-15}|");
+        i = i + 1;
+    }
+}
+void extenddays()
+{
+    displaystaydetails();
+    Console.WriteLine("Extend the stay of which Guest? (Enter S/N number of the guest)");
 }
 //main program
 while (true)
@@ -758,6 +808,14 @@ while (true)
     }
     else if (option == 6)
     {
+        while (true)
+        {
+            extenddays();
+            Console.WriteLine("\n Press anything to go back to the main menu");
+            Console.ReadKey();
+            Console.WriteLine(" "); //input key on next line
+            break;
+        }
         break;
     }
     else
