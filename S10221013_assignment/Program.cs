@@ -467,7 +467,7 @@ Room selectRoom()
                             break;
                         }
                     }
-                    return room;a
+                    return room;
                 }
                 else if (room.GetType() == typeof(DeluxeRoom))
                 {
