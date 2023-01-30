@@ -732,6 +732,41 @@ void extenddays()
 {
     displaystaydetails();
     Console.WriteLine("Extend the stay of which Guest? (Enter S/N number of the guest)");
+    int guestNum = 0;
+    Guest selectedGuest;
+    while (true)
+    {
+        try
+        {
+            guestNum = Convert.ToInt32(Console.ReadLine());
+            selectedGuest = guestList[guestNum - 1];
+            break;
+        }
+        catch (Exception)
+        {
+            Console.WriteLine("Please enter a valid number or a number that is in the list");
+        }
+    }
+    Console.WriteLine($"Selected Guest: {selectedGuest.Name}");
+    Console.WriteLine($"Current:\ncheck-in: {selectedGuest.HotelStay.CheckinDate.ToShortDateString()}\ncheckout: {selectedGuest.HotelStay.CheckoutDate.ToShortDateString()}\nDays: {selectedGuest.HotelStay.CheckoutDate.Subtract(selectedGuest.HotelStay.CheckinDate).Days}");
+    Console.WriteLine("Enter the number of days to extend the stay by: ");
+    int AddDays;
+    while (true)
+    {
+        try
+        {
+            AddDays = Convert.ToInt32(Console.ReadLine());
+            break;
+        }
+        catch (Exception)
+        {
+            Console.WriteLine("Please type a number");
+        }
+    }
+    DateTime newcheckoutdate = selectedGuest.HotelStay.CheckoutDate.AddDays(AddDays);
+    selectedGuest.HotelStay.CheckoutDate = newcheckoutdate;
+    Console.WriteLine($"New check-out date: {selectedGuest.HotelStay.CheckoutDate.ToShortDateString()}\nDays extended by:{AddDays}\nDays now:{selectedGuest.HotelStay.CheckoutDate.Subtract(selectedGuest.HotelStay.CheckinDate).Days}");
+
 }
 //main program
 while (true)
@@ -816,7 +851,7 @@ while (true)
             Console.WriteLine(" "); //input key on next line
             break;
         }
-        break;
+        
     }
     else
     {
