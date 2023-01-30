@@ -26,7 +26,7 @@ namespace S10221013_PRG2Assignment
         {
             CheckinDate = checkin;
             CheckoutDate = checkout;
-        }
+        }d
         public void AddRoom(Room room)
         { 
             if (RoomList == null) //if not empty create new list
