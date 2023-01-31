@@ -880,15 +880,17 @@ void ChargeAmountsMonthly()
             } 
         }
     }
+    double totalcost = 0;
     foreach (KeyValuePair<int, double> kvp in yearcharge)
     {
         if (kvp.Key != 13)
         {
-            Console.WriteLine($"{CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(kvp.Key)[..3]} {yearSelected}, Total: {kvp.Value}");
-
+            Console.WriteLine($"{CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(kvp.Key)[..3]} {yearSelected}: \t\t  ${kvp.Value}");
+            totalcost = totalcost + kvp.Value;
         }
 
     }
+    Console.WriteLine($"Total: {totalcost}");
 }
 void CheckoutGuest()
 {
@@ -1283,10 +1285,7 @@ while (true)
     {
         while (true)
         {
-            if (guestList[1].HotelStay.CheckinDate.Year == 2022)
-            {
-                Console.WriteLine("Foobar");
-            }
+
             ChargeAmountsMonthly();
             Console.WriteLine("\n Press anything to go back to the main menu");
             Console.ReadKey();
