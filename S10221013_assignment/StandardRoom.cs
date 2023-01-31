@@ -23,26 +23,26 @@ namespace S10221013_PRG2Assignment
             double total = 0;
             if (RequireWifi == true)
             {
-                total = +10;
+                total = total + 10;
             }
             if (RequireBreakfast == true)
             {
-                total = +20;
+                total = total +20;
             }
 
             total = DailyRate + total;
-            if (BedConfiguration == "single")
+            /* if (BedConfiguration == "single")
             {
-                total = +90;
+                total =total +90;
             }
             else if (BedConfiguration == "twin")
             {
-                total = +110;
+                total = total +110;
             }
             else if (BedConfiguration == "triple")
             {
-                total = +120;
-            }
+                total = total +120;
+            } */
             return total;
         }
         public override string ToString()

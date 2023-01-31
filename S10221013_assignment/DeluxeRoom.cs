@@ -21,21 +21,9 @@ namespace S10221013_PRG2Assignment
             double total = 0;
             if (AdditionalBed == true)
             {
-                total = +20;
+                total = +25;
             }
             total = DailyRate + total;
-            /* if (BedConfiguration == "single")
-            {
-                total = +90;
-            }
-            else if (BedConfiguration == "twin")
-            {
-                total = +110;
-            }
-            else if (BedConfiguration == "triple")
-            {
-                total = +120;
-            } */
             return total;
         }
 

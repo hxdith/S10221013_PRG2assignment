@@ -40,14 +40,13 @@ namespace S10221013_PRG2Assignment
         public double CalculateTotal()
         {
             double total = 0;
-            if(RoomList.Count <= 0)
+            if(RoomList.Count >= 0)
             {
                 foreach (Room room in RoomList)
                 {
-                    if (room.IsAvail == false) //runs check if an available room is added inside by accident
-                    {
-                        total = +room.CalculateCharges() * (CheckinDate.Subtract(CheckoutDate).Days);
-                    }
+
+                        total = total + room.CalculateCharges() * (CheckoutDate.Subtract(CheckinDate).Days);
+
 
 
                 } 
